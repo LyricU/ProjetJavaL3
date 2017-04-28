@@ -69,7 +69,7 @@ public class ChoixFrame extends JFrame {
 		titre.setText("Bienvenue "+user.getNom());
 		//tp.addTab(null, new JPanel());
 		//tp.setTabComponentAt(0, profil);
-		profil.setIcon(new ImageIcon("C:\\Users\\PanoPort\\Desktop\\img\\icon-paper.png"));
+		profil.setIcon(new ImageIcon("src/img/6244.png"));
 
 		//ADD
 		//this.add(titre, BorderLayout.NORTH);
