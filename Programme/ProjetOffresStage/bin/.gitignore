@@ -27,7 +27,14 @@
 /Dessin.class
 /EssaiChoixFichier.class
 /Frame.class
-/Main.class
+/Profil$1.class
+/Profil$2.class
+/Profil$3.class
+/Profil$4.class
+/Profil$5.class
+/Profil$6.class
+/Profil$7.class
+/Profil$8.class
 /Profil$AbstractTabRenderer.class
 /Profil$DefaultTabRenderer.class
 /Profil$ITabRenderer.class
@@ -38,6 +45,7 @@
 /SaisirOffre$3.class
 /SaisirOffre.class
 /TableModel.class
+/TableModelPlus.class
 /TablePanel.class
 /Test.class
 /VisuProfilCandidat$1.class
@@ -46,12 +54,3 @@
 /VisuProfilCandidat.class
 /allConnexion/
 /img/
-/Profil$1.class
-/Profil$2.class
-/Profil$3.class
-/Profil$4.class
-/Profil$5.class
-/Profil$6.class
-/Profil$7.class
-/Profil$8.class
-/TableModelPlus.class
