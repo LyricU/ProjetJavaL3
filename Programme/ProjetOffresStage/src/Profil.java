@@ -46,6 +46,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import allConnexion.DAOException;
 import allConnexion.Entreprise;
 import allConnexion.EntrepriseDaoImpl;
+import allConnexion.ListOffres;
 import allConnexion.ListOffresDaoImpl;
 import allConnexion.Offres;
 import allConnexion.OffresDaoImpl;
@@ -75,7 +76,7 @@ public class Profil {
 	JPanel panGridLog2 = new JPanel(new GridBagLayout());
 	GridBagConstraints gc = new GridBagConstraints();
 	GridBagConstraints gc2 = new GridBagConstraints();
-	TableModel modele;
+	TableModelPlus modele;
 	JTable table;
 	Offres o, o2;
 	Date date;
@@ -84,7 +85,8 @@ public class Profil {
 	Utilisateur user;
 	Entreprise entr;
 	int duree, idO, idE;
-	
+
+	List<String> listStatut = new ArrayList<String>();
 	List<Offres> listOffres = new ArrayList<Offres>();
 	List<Integer> listId = new ArrayList<Integer>();
 	void createAndShowGUIEtu(Utilisateur user) {
@@ -127,7 +129,7 @@ public class Profil {
 		gc.gridx = 1;
 		gc.gridy = 1;
 		panGridLog.add(vMail,gc);
-		
+
 		gc2.gridx = 0;
 		gc2.gridy = 0;
 		panGridLog2.add(cNom,gc2);
@@ -162,18 +164,27 @@ public class Profil {
 		gc2.gridx = 2;
 		gc2.gridy = 2;
 		panGridLog2.add(cv,gc2);
-		
+
 		int i =0;
+		//List<String> listStatut2 = new ArrayList<String>();
 		UtilisateurDaolmpl udi = new UtilisateurDaolmpl();
 		OffresDaoImpl odi = new OffresDaoImpl();
 		ListOffresDaoImpl ldi = new ListOffresDaoImpl();
 		try {
 			i = udi.recupUtilisateurById(user);
 			setListId(ldi.recupListOffresByID(i));
-			System.out.println("maliste: "+getListId());
-			for (Iterator<Integer> iter = getListId().iterator(); iter.hasNext();){
+			System.out.println(getListId());
+			for(Iterator<Integer> iter = getListId().iterator(); iter.hasNext();){
 				int a = iter.next();
-				getListOffres().add(odi.recupOffre(a));
+				getListStatut().addAll(ldi.recupStatut(a, i));
+			}
+			System.out.println("maliste: "+getListStatut());
+			for (Iterator<Integer> iter = getListId().iterator(); iter.hasNext();){
+				for(Iterator<String> iter2 = getListStatut().iterator(); iter2.hasNext();){
+					int a = iter.next();
+					String b = iter2.next();
+					getListOffres().add(odi.recupOffrePlus(a, b));
+				}
 			}
 			//listOffres = odi.listOffreAllByIdOffre(getListId());
 		} catch (DAOException e) {
@@ -183,13 +194,14 @@ public class Profil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		modele = new TableModel(getListOffres());
+
+
+		modele = new TableModelPlus(getListOffres());
 		table = new JTable(modele);		
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		p2.add(visu, BorderLayout.SOUTH);
 		p2.add(new JScrollPane(table), BorderLayout.CENTER);
-		
+
 		visu.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -325,7 +337,7 @@ public class Profil {
 			}
 		});
 	}
-	
+
 
 	void createAndShowGUIEnt(Utilisateur user, Entreprise ent) {
 
@@ -492,11 +504,19 @@ public class Profil {
 			System.out.println("l'ID user: "+i2.getId());
 			i3 = i2.getId();
 			setListId(ldi2.recupListOffresByID(i3));
-			System.out.println("maliste: "+getListId());
-			for (Iterator<Integer> iter = getListId().iterator(); iter.hasNext();){
+			for(Iterator<Integer> iter = getListId().iterator(); iter.hasNext();){
 				int a = iter.next();
-				getListOffres().add(odi2.recupOffre(a));
+				getListStatut().addAll(ldi2.recupStatutForEntr(a, ent.getId()));
 			}
+			System.out.println("maliste: "+getListStatut());
+			for (Iterator<Integer> iter = getListId().iterator(); iter.hasNext();){
+				for(Iterator<String> iter2 = getListStatut().iterator(); iter2.hasNext();){
+					int a = iter.next();
+					String b = iter2.next();
+					getListOffres().add(odi2.recupOffrePlus(a, b));
+				}
+			}
+			
 			//listOffres = ldi2.recupListOffresByID(getListId());
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
@@ -505,18 +525,18 @@ public class Profil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		modele = new TableModel(getListOffres());
+
+		modele = new TableModelPlus(getListOffres());
 		table = new JTable(modele);		
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		p3.add(new JScrollPane(table), BorderLayout.CENTER);
 		p3.add(visu, BorderLayout.SOUTH);
-		
+
 		visu.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				/*int selection = table.getSelectedRow();
+				int selection = table.getSelectedRow();
 				setDuree((int) table.getValueAt(selection, 4));
 				formatter = new SimpleDateFormat("YYYY-MM-DD");
 				date = new Date();
@@ -546,8 +566,8 @@ public class Profil {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				new ConsultFrame(getUser(), getIdO());*/
-				new VisuProfilCandidat();
+				//new ConsultFrame(getUser(), getIdO());
+				new VisuProfilCandidat(getIdO(), getIdE());
 			}
 		});
 
@@ -850,6 +870,14 @@ public class Profil {
 
 	public void setIdE(int idE) {
 		this.idE = idE;
+	}
+	public List<String> getListStatut() {
+		return listStatut;
+	}
+
+
+	public void setListStatut(List<String> listStatut) {
+		this.listStatut = listStatut;
 	}
 
 	class DefaultTabRenderer extends AbstractTabRenderer implements PropertyChangeListener {

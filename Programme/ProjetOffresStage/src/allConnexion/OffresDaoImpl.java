@@ -138,6 +138,28 @@ public class OffresDaoImpl implements OffresDao{
 		}
 		return offre;
 	}
+	public Offres recupOffrePlus(int idOffre, String statut) throws DAOException, SQLException {
+		Offres offre = null;
+		try {
+			final String SQL_SELECT = "SELECT idOffre, idEntreprise, NomEnt, Domaine, Libelle, Date, Duree, Descriptif "
+					+ "FROM offres "
+					+ "WHERE idOffre = ?";
+			state = SingletonBDD.getInstance().prepareStatement(SQL_SELECT);
+			state.setInt(1, idOffre);
+			ResultSet rs = state.executeQuery();
+			if(rs.next()){
+				offre = new Offres(rs.getString(3), rs.getString(4),rs.getString(5),rs.getDate(6),rs.getInt(7),rs.getString(8),statut);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally{
+			if(state!=null){
+				state.close();
+			}
+		}
+		return offre;
+	}
 	public int recupOffreIdEntr(int id) throws DAOException, SQLException {
 		int i=0;
 		try {
@@ -201,6 +223,27 @@ public class OffresDaoImpl implements OffresDao{
 			ResultSet rs = state.executeQuery();
 			while(rs.next()){
 				Offres offre = new Offres(rs.getString(1),rs.getString(2),rs.getString(3),rs.getDate(4),rs.getInt(5),rs.getString(6));
+				listOffres.add(offre);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally{
+			if(state!=null){
+				state.close();
+			}
+		}
+		return listOffres;
+	}
+	
+	public List<Offres> listOffreAllPlusStatut(String statut) throws DAOException, SQLException {
+		List<Offres> listOffres = new ArrayList<Offres>();
+		try {
+			final String SQL_SELECT = "SELECT NomEnt, Domaine, Libelle, Date, Duree, Descriptif FROM offres";
+			state = SingletonBDD.getInstance().prepareStatement(SQL_SELECT);
+			ResultSet rs = state.executeQuery();
+			while(rs.next()){
+				Offres offre = new Offres(rs.getString(1),rs.getString(2),rs.getString(3),rs.getDate(4),rs.getInt(5),rs.getString(6),statut);
 				listOffres.add(offre);
 			}
 		} catch (SQLException e) {

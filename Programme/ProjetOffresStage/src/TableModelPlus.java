@@ -5,15 +5,16 @@ import allConnexion.Offres;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TableModel extends AbstractTableModel{
+public class TableModelPlus extends AbstractTableModel{
 
 	protected List<Offres> data;            //données
+	protected String statut;
 	protected List<String> columnNames;    //noms de colonnes
-	protected String[] nomCol= {"Nom_Entreprise", "Domaine", "Libelle", "Date", "Duree", "Description"};
-	protected String a="Nom_Entreprise", b="Domaine", c="Libelle", d="Date", e="Duree", f="Description";
+	protected String[] nomCol= {"Nom_Entreprise", "Domaine", "Libelle", "Date", "Duree", "Description", "Statut"};
+	protected String a="Nom_Entreprise", b="Domaine", c="Libelle", d="Date", e="Duree", f="Description", g="Statut";
 
 	/** Creates a new instance of TableModelC */
-	public TableModel(List<Offres> data) {
+	public TableModelPlus(List<Offres> data) {
 		columnNames = new ArrayList<>();
 		this.columnNames.add(this.a);
 		this.columnNames.add(this.b);
@@ -21,6 +22,7 @@ public class TableModel extends AbstractTableModel{
 		this.columnNames.add(this.d);
 		this.columnNames.add(this.e);
 		this.columnNames.add(this.f);
+		this.columnNames.add(this.g);
 		this.data=data;
 	}
 	public int getRowCount() {
@@ -77,6 +79,10 @@ public class TableModel extends AbstractTableModel{
 		case 5:
 			//Description
 			return data.get(rowIndex).getDescriptif();
+			
+		case 6:
+			//Statut
+			return data.get(rowIndex).getStatut();
 
 		default:
 			throw new IllegalArgumentException();
